@@ -6,16 +6,12 @@ LOGGER = singer.get_logger()
 
 
 def sync_qa(client, stream, state):
-    bookmark_column = stream.replication_key
-    is_sorted = False  # TODO: indicate whether data is sorted ascending on bookmark value
-
     singer.write_schema(
         stream_name=stream.tap_stream_id,
         schema=stream.schema.to_dict(),
         key_properties=stream.key_properties,
     )
 
-    max_bookmark = None
     for new_bookmark, rows in client.paging_get('v2/qa', after=state.get('qa')):
         for row in rows:
             if row['score']:
