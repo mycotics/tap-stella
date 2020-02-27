@@ -1,0 +1,63 @@
+{
+    "type": [
+        "null",
+        "object"
+    ],
+    "additionalProperties": true,
+    "properties": {
+        "uuid": {
+            "type": [
+                "string"
+            ]
+        },
+        "interaction_id": {
+            "type": [
+                "null",
+                "string",
+                "integer"
+            ]
+        },
+        "interaction_url": {
+            "type": [
+                "null",
+                "string"
+            ]
+        },
+        "completed_at": {
+            "type": [
+                "null",
+                "string"
+            ],
+            "format": "date-time"
+        },
+        "count_toward_score": {
+            "type": [
+                "null",
+                "boolean"
+            ]
+        },
+        "score": {
+            "type": [
+                "null",
+                "string"
+            ]
+        },
+        "autofailed": {
+            "type": [
+                "null",
+                "boolean"
+            ]
+        },
+        "solicitation_id": {
+            "type": [
+                "null",
+                "string"
+            ]
+        },
+        "sequence_id": {
+            "type": [
+                "integer"
+            ]
+        }
+    }
+}
