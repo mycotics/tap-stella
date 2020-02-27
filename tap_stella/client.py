@@ -26,6 +26,8 @@ def set_query_parameters(url, **params):
     scheme, netloc, path, query_string, fragment = urllib.parse.urlsplit(url)
     query_params = urllib.parse.parse_qs(query_string)
 
+    new_query_string = ''
+
     for param_name, param_value in params.items():
         query_params[param_name] = [param_value]
         new_query_string = urllib.parse.urlencode(query_params, doseq=True)

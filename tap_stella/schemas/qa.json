@@ -39,7 +39,7 @@
         "score": {
             "type": [
                 "null",
-                "string"
+                "number"
             ]
         },
         "autofailed": {

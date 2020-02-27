@@ -17,8 +17,9 @@ def sync_qa(client, stream, state):
 
     max_bookmark = None
     for new_bookmark, rows in client.paging_get('v2/qa', after=state.get('qa')):
-        # TODO: place type conversions or transformations here
-
+        for row in rows:
+            if row['score']:
+                row['score'] = float(row['score'].strip('%'))/100
         # write one or more rows to the stream:
         singer.write_records(stream.tap_stream_id, rows)
         singer.write_state({stream.tap_stream_id: new_bookmark})
