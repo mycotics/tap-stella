@@ -33,7 +33,7 @@ def discover():
     for stream_id, schema in raw_schemas.items():
         # TODO: populate any metadata and stream's key properties here..
         stream_metadata = []
-        key_properties = []
+        key_properties = ['uuid']
 
         replication_key = None
         if stream_id == 'qa':
