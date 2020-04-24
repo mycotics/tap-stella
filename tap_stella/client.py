@@ -105,10 +105,9 @@ class Client:
                 'url': url,
             })
 
-            for record in data:
-                sequence_id = max(record['sequence_id'], sequence_id)
-
-            yield sequence_id, data
+            if data:
+                sequence_id = data[-1]['sequence_id']
+                yield sequence_id, data
 
             if len(data) < MAX_RESPONSE_SIZE:
                 break
