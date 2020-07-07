@@ -45,32 +45,6 @@
                 "string"
             ]
         },
-
-        "parent_uuid": {
-            "type": [
-                "string"
-            ]
-        },
-        "branding": {
-            "type": [
-                "string"
-            ]
-        },
-        "channel": {
-            "type": [
-                "string"
-            ]
-        },
-        "ext_interaction_id": {
-            "type": [
-                "string"
-            ]
-        },
-        "external_url": {
-            "type": [
-                "string"
-            ]
-        },
         "survey_id": {
             "type": [
                 "integer"
@@ -85,13 +59,7 @@
             "type": [
                 "null",
                 "array"
-            ],
-        },
-        "tags": {
-            "type": [
-                "null",
-                "array"
-            ],
+            ]
         },
         "request_created_at": {
             "type": [
@@ -117,7 +85,7 @@
             "type": [
                 "null",
                 "string"
-            ],
+            ]
         },
         "response_received_at": {
             "type": [
@@ -136,7 +104,7 @@
             "type": [
                 "null",
                 "string"
-            ],
+            ]
         },
         "employee": {
             "type": [
@@ -168,7 +136,7 @@
                         "null",
                         "string"
                     ]
-                },
+                }
             }
         },
         "team_leader": {
@@ -224,14 +192,14 @@
                 "null",
                 "object"
             ],
-            "additionalProperties": true,
+            "additionalProperties": true
         },
         "answers": {
             "type": [
                 "null",
                 "object"
             ],
-            "additionalProperties": true,
+            "additionalProperties": true
         }
     }
 }
