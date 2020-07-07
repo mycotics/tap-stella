@@ -45,6 +45,19 @@ def sync_qa(client, stream, state):
         singer.write_state({stream.tap_stream_id: new_bookmark})
 
 
+def sync_feedback(client, stream, state):
+    singer.write_schema(
+        stream_name=stream.tap_stream_id,
+        schema=stream.schema.to_dict(),
+        key_properties=stream.key_properties,
+    )
+
+    for new_bookmark, rows in client.paging_get('v2/data', after=state.get('feedback')):
+        # write one or more rows to the stream:
+        singer.write_records(stream.tap_stream_id, rows)
+        singer.write_state({stream.tap_stream_id: new_bookmark})
+
+
 def sync(config, state, catalog):
     """ Sync data from tap source """
     client = Client(config)
@@ -53,3 +66,5 @@ def sync(config, state, catalog):
         LOGGER.info("Syncing stream:" + stream.tap_stream_id)
         if stream.tap_stream_id == 'qa':
             sync_qa(client, stream, state)
+        if stream.tap_stream_id == 'feedback':
+            sync_feedback(client, stream, state)
