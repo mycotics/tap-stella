@@ -10,7 +10,7 @@ setup(
     classifiers=["Programming Language :: Python :: 3 :: Only"],
     py_modules=["tap_stella"],
     install_requires=[
-        "singer-python>=5.9.0",
+        "singer-python>=5.7.3",
         "PyJWT==1.7.1",
         "requests",
     ],
