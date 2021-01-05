@@ -3,14 +3,14 @@ from setuptools import setup
 
 setup(
     name="tap-stella",
-    version="0.1.1",
+    version="0.1.2",
     description="Singer.io tap for extracting data",
     author="Stitch",
     url="http://singer.io",
     classifiers=["Programming Language :: Python :: 3 :: Only"],
     py_modules=["tap_stella"],
     install_requires=[
-        "singer-python>=5.9.0",
+        "singer-python>=5.7.3",
         "PyJWT==1.7.1",
         "requests",
     ],
