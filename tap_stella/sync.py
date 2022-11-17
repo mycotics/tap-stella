@@ -26,7 +26,7 @@ def sync_qa(client, stream, state):
 
     for new_bookmark, rows in client.paging_get('v2/qa', after=state.get('qa')):
         for row in rows:
-            if row['score']:
+            if row.get('score'):
                 row['score'] = float(row['score'].strip('%'))/100
 
             if isinstance(deep_get(row, 'scorecard.archived_at'), dict):
