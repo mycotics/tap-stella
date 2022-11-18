@@ -10,9 +10,10 @@ from dateutil.parser import parse as parse_datetime
 import jwt
 import requests
 import requests.exceptions
-import singer
 
-LOGGER = singer.get_logger()
+from tap_stella.util import get_logger
+
+LOGGER = get_logger()
 
 
 def set_query_parameters(url, **params):
@@ -54,16 +55,16 @@ class Client:
 
         return headers
 
-    def get(self, url, params=None, headers=None):
+    def get(self, url, params=None, headers=None, timeout=10):
         if not url.startswith('https://'):
             url = f'{self.BASE_URL}/{url}'
 
-        LOGGER.info(f'Stella connect GET {url}')
+        LOGGER.info(f'Stella connect GET', extra={'url': url})
 
         for num_retries in range(self.MAX_GET_ATTEMPTS):
             will_retry = num_retries < self.MAX_GET_ATTEMPTS - 1
             try:
-                resp = requests.get(url, params=params, headers=self.get_headers(headers))
+                resp = requests.get(url, params=params, headers=self.get_headers(headers), timeout=timeout)
             # Catch the base exception from requests
             except requests.exceptions.RequestException as e:
                 resp = None
@@ -73,7 +74,7 @@ class Client:
                     raise APIQueryError({'message': str(e)}) from e
             if will_retry:
                 if resp and resp.status_code >= 500:
-                    LOGGER.info('stella connect request with 5xx response, retrying', extra={
+                    LOGGER.info('Stella connect request with 5xx response, retrying', extra={
                         'url': resp.url,
                         'reason': resp.reason,
                         'code': resp.status_code
@@ -98,11 +99,11 @@ class Client:
         while url and url not in requested_urls:
             requested_urls.add(url)
             data = self.get(url)
-
-            LOGGER.info('stella connect paging request', extra={
+            
+            LOGGER.info('Stella connect paging GET finished', extra={
+                'url': url,
                 'total_size': len(data),
                 'page': len(requested_urls),
-                'url': url,
             })
 
             if data:
