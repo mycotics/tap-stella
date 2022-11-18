@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 import os
 import json
-import singer
 from singer import utils, metadata
 from singer.catalog import Catalog, CatalogEntry
 from singer.schema import Schema
 
 from .sync import sync
+from tap_stella.util import get_logger
 
 REQUIRED_CONFIG_KEYS = ['api_key', 'secret']
-LOGGER = singer.get_logger()
+LOGGER = get_logger()
 
 
 def get_abs_path(path):

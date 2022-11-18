@@ -2,8 +2,9 @@ import singer
 import datetime
 
 from .client import Client
+from tap_stella.util import get_logger
 
-LOGGER = singer.get_logger()
+LOGGER = get_logger()
 
 
 def deep_get(d: dict, key_path: tuple):
@@ -24,6 +25,7 @@ def sync_qa(client, stream, state):
         key_properties=stream.key_properties,
     )
 
+    # after indicates the 'sequence_id' and not a timestamp
     for new_bookmark, rows in client.paging_get('v2/qa', after=state.get('qa')):
         for row in rows:
             if row.get('score'):
@@ -52,6 +54,7 @@ def sync_feedback(client, stream, state):
         key_properties=stream.key_properties,
     )
 
+    # after indicates the 'sequence_id' and not a timestamp
     for new_bookmark, rows in client.paging_get('v2/data', after=state.get('feedback')):
         # write one or more rows to the stream:
         singer.write_records(stream.tap_stream_id, rows)
