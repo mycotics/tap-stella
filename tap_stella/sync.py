@@ -18,7 +18,7 @@ def deep_get(d: dict, key_path: tuple):
     return value
 
 
-def sync_qa(client, stream, state):
+def sync_qa(client, stream, state) -> dict:
     singer.write_schema(
         stream_name=stream.tap_stream_id,
         schema=stream.schema.to_dict(),
@@ -26,6 +26,7 @@ def sync_qa(client, stream, state):
     )
 
     # after indicates the 'sequence_id' and not a timestamp
+    new_bookmark: int = 0
     for new_bookmark, rows in client.paging_get('v2/qa', after=state.get('qa')):
         for row in rows:
             if row['score']:
@@ -44,30 +45,40 @@ def sync_qa(client, stream, state):
 
         # write one or more rows to the stream:
         singer.write_records(stream.tap_stream_id, rows)
-        singer.write_state({stream.tap_stream_id: new_bookmark})
+    if new_bookmark:
+        return {stream.tap_stream_id: new_bookmark}
+    return {}
 
-
-def sync_feedback(client, stream, state):
+def sync_feedback(client, stream, state) -> dict:
     singer.write_schema(
         stream_name=stream.tap_stream_id,
         schema=stream.schema.to_dict(),
         key_properties=stream.key_properties,
     )
-
+    new_bookmark: int = 0
     # after indicates the 'sequence_id' and not a timestamp
     for new_bookmark, rows in client.paging_get('v2/data', after=state.get('feedback')):
         # write one or more rows to the stream:
         singer.write_records(stream.tap_stream_id, rows)
-        singer.write_state({stream.tap_stream_id: new_bookmark})
-
+    if new_bookmark:
+        return {stream.tap_stream_id: new_bookmark}
+    return {}
 
 def sync(config, state, catalog):
     """ Sync data from tap source """
     client = Client(config)
     # Loop over selected streams in catalog
+    new_state = {}
     for stream in catalog.get_selected_streams(state):
         LOGGER.info("Syncing stream:" + stream.tap_stream_id)
         if stream.tap_stream_id == 'qa':
-            sync_qa(client, stream, state)
+            qa_state = sync_qa(client, stream, state)
+            new_state.update(qa_state)
         if stream.tap_stream_id == 'feedback':
-            sync_feedback(client, stream, state)
+            feedback_state = sync_feedback(client, stream, state)
+            new_state.update(feedback_state)
+
+    if new_state:
+        singer.write_state(new_state)
+    else:
+        LOGGER.warning("State is empty after syncing, not writing state")
