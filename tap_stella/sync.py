@@ -24,9 +24,8 @@ def sync_qa(client, stream, state) -> dict:
         schema=stream.schema.to_dict(),
         key_properties=stream.key_properties,
     )
-
+    new_bookmark = state.get('qa')
     # after indicates the 'sequence_id' and not a timestamp
-    new_bookmark: int = 0
     for new_bookmark, rows in client.paging_get('v2/qa', after=state.get('qa')):
         for row in rows:
             if row.get('score'):
@@ -45,9 +44,7 @@ def sync_qa(client, stream, state) -> dict:
 
         # write one or more rows to the stream:
         singer.write_records(stream.tap_stream_id, rows)
-    if new_bookmark:
-        return {stream.tap_stream_id: new_bookmark}
-    return {}
+    return {stream.tap_stream_id: new_bookmark}
 
 def sync_feedback(client, stream, state) -> dict:
     singer.write_schema(
@@ -55,14 +52,12 @@ def sync_feedback(client, stream, state) -> dict:
         schema=stream.schema.to_dict(),
         key_properties=stream.key_properties,
     )
-    new_bookmark: int = 0
     # after indicates the 'sequence_id' and not a timestamp
+    new_bookmark = state.get('feedback')
     for new_bookmark, rows in client.paging_get('v2/data', after=state.get('feedback')):
         # write one or more rows to the stream:
         singer.write_records(stream.tap_stream_id, rows)
-    if new_bookmark:
-        return {stream.tap_stream_id: new_bookmark}
-    return {}
+    return {stream.tap_stream_id: new_bookmark}
 
 def sync(config, state, catalog):
     """ Sync data from tap source """
