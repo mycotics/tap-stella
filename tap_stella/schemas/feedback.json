@@ -15,9 +15,16 @@
                 "integer"
             ]
         },
+        "is_recovery": {
+            "type": [
+                "boolean",
+                "null"
+            ]
+        },
         "parent_uuid": {
             "type": [
-                "string"
+                "string",
+                "null"
             ]
         },
         "branding": {
@@ -32,27 +39,34 @@
         },
         "ext_interaction_id": {
             "type": [
-                "string"
+                "string",
+                "null"
             ]
         },
         "external_url": {
             "type": [
-                "string"
+                "string",
+                "null"
+
             ]
         },
         "language": {
             "type": [
-                "string"
+                "string",
+                "null"
+
             ]
         },
         "survey_id": {
             "type": [
-                "integer"
+                "integer",
+                "null"
             ]
         },
         "survey_name": {
             "type": [
-                "integer"
+                "string",
+                "null"
             ]
         },
         "tags": {
@@ -65,8 +79,7 @@
             "type": [
                 "null",
                 "string"
-            ],
-            "format": "date-time"
+            ]
         },
         "request_delivery_status": {
             "type": [
@@ -78,10 +91,15 @@
             "type": [
                 "null",
                 "string"
-            ],
-            "format": "date-time"
+            ]
         },
         "requested_via": {
+            "type": [
+                "null",
+                "string"
+            ]
+        },
+        "delivered_at": {
             "type": [
                 "null",
                 "string"
@@ -91,8 +109,7 @@
             "type": [
                 "null",
                 "string"
-            ],
-            "format": "date-time"
+            ]
         },
         "reward_eligible": {
             "type": [
@@ -105,6 +122,13 @@
                 "null",
                 "string"
             ]
+        },
+        "marketing": {
+            "type": [
+                "null",
+                "object"
+            ],
+            "additionalProperties": true
         },
         "employee": {
             "type": [
