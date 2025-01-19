@@ -27,8 +27,7 @@
             "type": [
                 "null",
                 "string"
-            ],
-            "format": "date-time"
+            ]
         },
         "count_toward_score": {
             "type": [
@@ -76,8 +75,7 @@
                     "type": [
                         "null",
                         "string"
-                    ],
-                    "format": "date-time"
+                    ]
                 }
             }
         },
@@ -179,6 +177,14 @@
                     ]
                 }
             }
+        },
+        "questions": {
+            "type": [
+                "null",
+                "object"
+            ],
+            "additionalProperties": true
         }
     }
 }
+
