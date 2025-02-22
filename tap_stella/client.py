@@ -65,13 +65,14 @@ class Client:
             will_retry = num_retries < self.MAX_GET_ATTEMPTS - 1
             try:
                 resp = requests.get(url, params=params, headers=self.get_headers(headers), timeout=timeout)
+                time.sleep(1)
             # Catch the base exception from requests
             except requests.exceptions.RequestException as e:
                 resp = None
                 if will_retry:
                     LOGGER.info('Stella connect: unable to get response, will retry', exc_info=True)
                 else:
-                    raise APIQueryError({'message': str(e)}) from e
+                    raise Exception({'message': str(e)}) from e
             if will_retry:
                 if resp and resp.status_code >= 500:
                     LOGGER.info('Stella connect request with 5xx response, retrying', extra={
