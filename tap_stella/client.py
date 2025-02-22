@@ -55,7 +55,7 @@ class Client:
 
         return headers
 
-    def get(self, url, params=None, headers=None, timeout=10):
+    def get(self, url, params=None, headers=None, timeout=60*5):
         if not url.startswith('https://'):
             url = f'{self.BASE_URL}/{url}'
 
