@@ -64,8 +64,9 @@ class Client:
         for num_retries in range(self.MAX_GET_ATTEMPTS):
             will_retry = num_retries < self.MAX_GET_ATTEMPTS - 1
             try:
-                resp = requests.get(url, params=params, headers=self.get_headers(headers), timeout=timeout)
-                time.sleep(1)
+                with requests.get(url, params=params, headers=self.get_headers(headers), timeout=timeout) as resp:
+                    resp.raise_for_status()
+                    return resp.json()
             # Catch the base exception from requests
             except requests.exceptions.RequestException as e:
                 resp = None
@@ -85,8 +86,6 @@ class Client:
                     break  # No retry needed
                 time.sleep(60)
 
-        resp.raise_for_status()
-        return resp.json()
 
     def paging_get(self, url, **get_args):
         requested_urls = set()
