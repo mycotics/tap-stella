@@ -18,7 +18,7 @@ def deep_get(d: dict, key_path: tuple):
     return value
 
 
-def sync_qa(client, stream, state) -> dict:
+def sync_qa(client, stream, state, config) -> dict:
     singer.write_schema(
         stream_name=stream.tap_stream_id,
         schema=stream.schema.to_dict(),
@@ -26,7 +26,10 @@ def sync_qa(client, stream, state) -> dict:
     )
     new_bookmark = state.get('qa')
     # after indicates the 'sequence_id' and not a timestamp
-    for new_bookmark, rows in client.paging_get('v2/qa', after=state.get('qa')):
+
+    kwargs = {key: config[key] for key in ('created_at_gte', 'created_at_lte') if config.get(key)}
+
+    for new_bookmark, rows in client.paging_get('v2/qa', after=state.get('qa'), **kwargs):
         for row in rows:
             if row.get('score'):
                 row['score'] = float(row['score'].strip('%'))/100
@@ -46,7 +49,7 @@ def sync_qa(client, stream, state) -> dict:
         singer.write_records(stream.tap_stream_id, rows)
     return {stream.tap_stream_id: new_bookmark}
 
-def sync_feedback(client, stream, state) -> dict:
+def sync_feedback(client, stream, state, config) -> dict:
     singer.write_schema(
         stream_name=stream.tap_stream_id,
         schema=stream.schema.to_dict(),
@@ -54,7 +57,10 @@ def sync_feedback(client, stream, state) -> dict:
     )
     # after indicates the 'sequence_id' and not a timestamp
     new_bookmark = state.get('feedback')
-    for new_bookmark, rows in client.paging_get('v2/data', after=state.get('feedback')):
+
+    kwargs = {key: config[key] for key in ('created_at_gte', 'created_at_lte') if config.get(key)}
+
+    for new_bookmark, rows in client.paging_get('v2/data', after=state.get('feedback'), **kwargs):
         # write one or more rows to the stream:
         singer.write_records(stream.tap_stream_id, rows)
     return {stream.tap_stream_id: new_bookmark}
@@ -67,10 +73,10 @@ def sync(config, state, catalog):
     for stream in catalog.get_selected_streams(state):
         LOGGER.info("Syncing stream:" + stream.tap_stream_id)
         if stream.tap_stream_id == 'qa':
-            qa_state = sync_qa(client, stream, state)
+            qa_state = sync_qa(client, stream, state, config)
             new_state.update(qa_state)
         if stream.tap_stream_id == 'feedback':
-            feedback_state = sync_feedback(client, stream, state)
+            feedback_state = sync_feedback(client, stream, state, config)
             new_state.update(feedback_state)
 
     if new_state:
